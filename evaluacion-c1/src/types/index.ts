@@ -12,3 +12,12 @@ export interface InventoryRisk {
   category: string;
   risk_level: 'CRITICAL' | 'HIGH_RISK' | 'NORMAL';
 }
+
+export interface TopProduct {
+  id: number;
+  name: string;
+  category: string;
+  total_units: number;
+  revenue: number;
+  ranking: number;
+}

@@ -18,3 +18,20 @@ GROUP BY DATE(o.created_at)
 HAVING SUM(oi.qty * oi.unit_price) > 0
 
 ORDER BY sale_date DESC;
+
+CREATE OR REPLACE VIEW vw_top_products_ranked AS
+SELECT 
+    p.id,
+    p.name,
+    c.name AS category,
+    SUM(oi.qty) AS total_units,
+    SUM(oi.qty * oi.unit_price) AS revenue,
+    
+    RANK() OVER (ORDER BY SUM(oi.qty) DESC) AS ranking
+
+FROM products p
+JOIN order_items oi ON p.id = oi.product_id
+JOIN orders o ON oi.order_id = o.id
+JOIN categories c ON p.category_id = c.id
+WHERE o.status = 'completed'
+GROUP BY p.id, p.name, c.name;
