@@ -13,7 +13,7 @@ INSERT INTO customers (name, email) VALUES
 ('Ana López', 'ana@test.com'),
 ('Carlos Ruiz', 'carlos@test.com');
 
---  Órdenesa
+--  Órdenes
 INSERT INTO orders (customer_id, created_at, status, channel) VALUES
 (1, NOW() - INTERVAL '2 days', 'completed', 'store'),
 (2, NOW() - INTERVAL '1 day', 'completed', 'app'),
