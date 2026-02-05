@@ -1,8 +1,8 @@
-# ☕ Dashboard de Reportes - Cafetería del Campus
+# Dashboard de Reportes - Cafetería del Campus
 
 Sistema de Business Intelligence para analítica de una cafetería universitaria. Permite consultar reportes de ventas, productos estrella, inventario en riesgo, clientes frecuentes y mezcla de pagos.
 
-## 📋 Tabla de Contenidos
+## Tabla de Contenidos
 
 - [Tecnologías](#-tecnologías)
 - [Requisitos Previos](#-requisitos-previos)
@@ -12,18 +12,7 @@ Sistema de Business Intelligence para analítica de una cafetería universitaria
 - [Estructura del Proyecto](#-estructura-del-proyecto)
 - [Variables de Entorno](#-variables-de-entorno)
 
-## 🛠 Tecnologías
-
-| Tecnología | Versión | Uso |
-|------------|---------|-----|
-| Next.js | 15 | Framework de React |
-| React | 19 | Interfaz de usuario |
-| TypeScript | 5 | Tipado estático |
-| PostgreSQL | 16 | Base de datos |
-| Docker | - | Contenedorización |
-| Tailwind CSS | 4 | Estilos |
-
-## 📦 Requisitos Previos
+## Requisitos Previos
 
 Antes de comenzar, asegúrate de tener instalado:
 
@@ -31,7 +20,7 @@ Antes de comenzar, asegúrate de tener instalado:
 - [Node.js](https://nodejs.org/) v18 o superior (solo para desarrollo local sin Docker)
 - [Git](https://git-scm.com/)
 
-## 🚀 Instalación
+## Instalación
 
 ### 1. Clonar el repositorio
 
@@ -46,9 +35,9 @@ Crea un archivo `.env` en la raíz del proyecto:
 
 ```env
 # Base de datos
-POSTGRES_DB=awos_db
-POSTGRES_USER=awos_user
-POSTGRES_PASSWORD=awos_password
+POSTGRES_DB=db
+POSTGRES_USER=user
+POSTGRES_PASSWORD=password
 DB_PORT_EXTERNAL=5432
 DB_PORT_INTERNAL=5432
 
@@ -57,7 +46,7 @@ WEB_PORT=3000
 DATABASE_URL=postgresql://awos_user:awos_password@db:5432/awos_db
 ```
 
-## ▶️ Ejecución
+## Ejecución
 
 ### Opción 1: Con Docker (Recomendado) 🐳
 
@@ -86,7 +75,7 @@ docker compose down
 docker compose down -v && docker compose up -d
 ```
 
-### Opción 2: Desarrollo Local 💻
+### Opción 2: Desarrollo Local
 
 Si prefieres ejecutar sin Docker:
 
@@ -119,7 +108,7 @@ npm run dev
 
 Accede a la aplicación en: **http://localhost:3000**
 
-## 📊 Reportes Disponibles
+## Reportes Disponibles
 
 | Reporte | Ruta | Descripción |
 |---------|------|-------------|
@@ -129,7 +118,7 @@ Accede a la aplicación en: **http://localhost:3000**
 | **Clientes** | `/reports/customers` | Clientes frecuentes y su historial |
 | **Mezcla de Pagos** | `/reports/payments` | Distribución de métodos de pago |
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 evaluacion_c1/
@@ -155,23 +144,10 @@ evaluacion_c1/
     └── Dockerfile
 ```
 
-## 🔐 Variables de Entorno
+## Autor
 
-| Variable | Descripción | Valor por defecto |
-|----------|-------------|-------------------|
-| `POSTGRES_DB` | Nombre de la base de datos | `awos_db` |
-| `POSTGRES_USER` | Usuario de PostgreSQL | `awos_user` |
-| `POSTGRES_PASSWORD` | Contraseña de PostgreSQL | `awos_password` |
-| `DB_PORT_EXTERNAL` | Puerto expuesto de la BD | `5432` |
-| `WEB_PORT` | Puerto de la aplicación web | `3000` |
-| `DATABASE_URL` | Cadena de conexión completa | - |
-
-## 👨‍💻 Autor
-
-**Brian** - Universidad Politécnica de Chiapas  
+Universidad Politécnica de Chiapas  
 Materia: Aplicaciones Web Orientadas a Servicios  
 Evaluación Corte 1 - Quinto Cuatrimestre
 
 ---
-
-⭐ Si este proyecto te fue útil, ¡dale una estrella en GitHub!
