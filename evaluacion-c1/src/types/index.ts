@@ -21,3 +21,19 @@ export interface TopProduct {
   revenue: number;
   ranking: number;
 }
+
+export interface PaymentMetric {
+  method: string;
+  total_transacciones: number;
+  total_monto: number;
+  porcentaje_uso: number;
+}
+
+export interface CustomerValue {
+  id: number;
+  name: string;
+  email: string;
+  num_ordenes: number;
+  total_gastado: number;
+  gasto_promedio: number;
+}
