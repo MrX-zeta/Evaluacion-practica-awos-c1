@@ -1,4 +1,3 @@
-import pool from '@/lib/db';
 import { TopProduct } from '@/types';
 import Link from 'next/link';
 
@@ -6,37 +5,34 @@ export const dynamic = 'force-dynamic';
 
 const ITEMS_PER_PAGE = 5;
 
-async function getTopProducts(search: string, page: number) {
-  try {
-    const offset = (page - 1) * ITEMS_PER_PAGE;
-    const searchTerm = `%${search}%`;
-
-    const query = `
-      SELECT * FROM vw_top_products_ranked 
-      WHERE name ILIKE $1 
-      ORDER BY ranking ASC
-      LIMIT $2 OFFSET $3`;
-    
-    const result = await pool.query<TopProduct>(query, [
-      searchTerm, 
-      ITEMS_PER_PAGE, 
-      offset
-    ]);
-    
-    return result.rows;
-  } catch (error) {
-    console.error('Error fetching top products:', error);
-    return [];
-  }
+interface TopProductsResponse {
+  success: boolean;
+  data: TopProduct[];
+  numberOne: TopProduct | null;
+  pagination: {
+    page: number;
+    limit: number;
+    hasMore: boolean;
+  };
 }
 
-async function getNumberOneProduct() {
+async function getTopProductsData(search: string, page: number): Promise<TopProductsResponse> {
   try {
-    const res = await pool.query<TopProduct>(
-      `SELECT * FROM vw_top_products_ranked WHERE ranking = 1 LIMIT 1`
-    );
-    return res.rows[0];
-  } catch (e) { return null; }
+    const params = new URLSearchParams();
+    params.set('q', search);
+    params.set('page', String(page));
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/top-products?${params}`, {
+      cache: 'no-store',
+    });
+    
+    if (!res.ok) throw new Error('Error fetching top products');
+    
+    return await res.json();
+  } catch (error) {
+    console.error('Error fetching top products:', error);
+    return { success: false, data: [], numberOne: null, pagination: { page: 1, limit: ITEMS_PER_PAGE, hasMore: false } };
+  }
 }
 
 export default async function TopProductsPage({
@@ -49,10 +45,9 @@ export default async function TopProductsPage({
   const query = params.q || '';
   const currentPage = Number(params.page) || 1;
 
-  const [products, numberOne] = await Promise.all([
-    getTopProducts(query, currentPage),
-    getNumberOneProduct()
-  ]);
+  const response = await getTopProductsData(query, currentPage);
+  const products = response.data;
+  const numberOne = response.numberOne;
 
   return (
     <div className="p-8 font-sans bg-gray-50 min-h-screen">

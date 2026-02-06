@@ -29,6 +29,8 @@ services:
     volumes:
       - ./evaluacion-c1:/app
       - /app/node_modules
+      - /app/.next
+    command: ["npx", "next", "dev"]
 
 volumes:
   awos_db_data:

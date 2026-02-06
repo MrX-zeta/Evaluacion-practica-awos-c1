@@ -1,21 +1,22 @@
-import pool from '@/lib/db';
 import { SalesMetric } from '@/types';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-async function getSalesData(from?: string, to?: string) {
+async function getSalesData(from?: string, to?: string): Promise<SalesMetric[]> {
   try {
-    const startDate = from || '2020-01-01';
-    const endDate = to || '2030-12-31';
+    const params = new URLSearchParams();
+    if (from) params.set('from', from);
+    if (to) params.set('to', to);
 
-    const result = await pool.query<SalesMetric>(
-      `SELECT * FROM vw_sales_daily 
-       WHERE sale_date BETWEEN $1 AND $2 
-       ORDER BY sale_date DESC`,
-      [startDate, endDate]
-    );
-    return result.rows;
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/sales?${params}`, {
+      cache: 'no-store',
+    });
+    
+    if (!res.ok) throw new Error('Error fetching sales');
+    
+    const json = await res.json();
+    return json.data || [];
   } catch (error) {
     console.error('Error fetching sales:', error);
     return [];

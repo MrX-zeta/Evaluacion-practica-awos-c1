@@ -1,16 +1,20 @@
-import pool from '@/lib/db';
 import { PaymentMetric } from '@/types';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-async function getPayments() {
+async function getPayments(): Promise<PaymentMetric[]> {
   try {
-    const res = await pool.query<PaymentMetric>(
-      `SELECT * FROM vw_payment_mix ORDER BY total_monto DESC`
-    );
-    return res.rows;
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/payments`, {
+      cache: 'no-store',
+    });
+    
+    if (!res.ok) throw new Error('Error fetching payments');
+    
+    const json = await res.json();
+    return json.data || [];
   } catch (error) {
+    console.error('Error fetching payments:', error);
     return [];
   }
 }

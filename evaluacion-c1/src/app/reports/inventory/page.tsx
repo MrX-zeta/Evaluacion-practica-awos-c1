@@ -1,24 +1,23 @@
-import pool from '@/lib/db';
 import { InventoryRisk } from '@/types';
 import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 
-async function getInventory(category?: string) {
+async function getInventory(category?: string): Promise<InventoryRisk[]> {
   try {
-    let query = `SELECT * FROM vw_inventory_risk`;
-    const params: string[] = [];
+    const params = new URLSearchParams();
+    if (category) params.set('category', category);
 
-    if (category && category !== 'Todas') {
-      query += ` WHERE category = $1`;
-      params.push(category);
-    }
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/inventory?${params}`, {
+      cache: 'no-store',
+    });
     
-    query += ` ORDER BY stock ASC`;
-
-    const result = await pool.query<InventoryRisk>(query, params);
-    return result.rows;
+    if (!res.ok) throw new Error('Error fetching inventory');
+    
+    const json = await res.json();
+    return json.data || [];
   } catch (error) {
+    console.error('Error fetching inventory:', error);
     return [];
   }
 }

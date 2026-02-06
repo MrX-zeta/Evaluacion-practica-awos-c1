@@ -1,4 +1,3 @@
-import pool from '@/lib/db';
 import { CustomerValue } from '@/types';
 import Link from 'next/link';
 
@@ -6,19 +5,33 @@ export const dynamic = 'force-dynamic';
 
 const LIMIT = 5;
 
-async function getCustomers(page: number) {
-  const offset = (page - 1) * LIMIT;
+interface CustomersResponse {
+  success: boolean;
+  data: CustomerValue[];
+  pagination: {
+    page: number;
+    limit: number;
+    hasMore: boolean;
+  };
+}
+
+async function getCustomers(page: number): Promise<CustomersResponse> {
   try {
-    const res = await pool.query<CustomerValue>(
-      `SELECT * FROM vw_customer_value 
-       ORDER BY total_gastado DESC 
-       LIMIT $1 OFFSET $2`,
-      [LIMIT, offset]
-    );
-    return res.rows;
+    const params = new URLSearchParams();
+    params.set('sort', 'total_gastado');
+    params.set('order', 'DESC');
+    params.set('page', String(page));
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/customers?${params}`, {
+      cache: 'no-store',
+    });
+    
+    if (!res.ok) throw new Error('Error fetching customers');
+    
+    return await res.json();
   } catch (error) {
     console.error("Error fetching customers:", error);
-    return [];
+    return { success: false, data: [], pagination: { page: 1, limit: LIMIT, hasMore: false } };
   }
 }
 
@@ -30,7 +43,8 @@ export default async function CustomersPage({
   const params = await searchParams;
   const currentPage = Number(params.page) || 1;
   
-  const customers = await getCustomers(currentPage);
+  const response = await getCustomers(currentPage);
+  const customers = response.data;
 
   return (
     <div className="p-8 font-sans bg-gray-50 min-h-screen">
